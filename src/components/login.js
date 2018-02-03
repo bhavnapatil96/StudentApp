@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {BrowserRouter,Route,Switch,NavLink} from 'react-router-dom'
 
 const axios =require('axios');
 class Login extends React.Component{
@@ -22,6 +21,7 @@ class Login extends React.Component{
                 password:this.state.password
             }).then((res)=>{
             console.log(`Response ${res.data}`);
+            this.props.history.push('/list');
         }).catch((e)=>{
             console.log(`Error : ${e.message}`);
         });

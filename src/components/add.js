@@ -16,7 +16,8 @@ class Add extends React.Component{
             gender:'',
             city:'',
             iagree:'',
-            photo:''
+            photo:'',
+            mycity:['Surat','Baroda','Mumbai']
         }
     }
     sendData=()=>{
@@ -70,9 +71,12 @@ class Add extends React.Component{
                             <div className="form-group">
                                 <label>City</label>
                                 <select className="form-control" ref="selectcity" id="selectcity">
-                                    <option value="Surat">Surat</option>
-                                    <option value="Baroda">Baroda</option>
-                                    <option value="Mumbai">Mumbai</option>
+                                    {
+                                        this.state.mycity.map((c,i)=>{
+                                            return   <option value={c}>{c}</option>
+                                        })
+                                    }
+
                                 </select>
                             </div>
                             <div className=" form-group checkbox">
