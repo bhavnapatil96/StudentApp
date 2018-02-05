@@ -1,11 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {} from 'reactstrap';
+import { Nav, NavItem, Dropdown, DropdownItem, DropdownToggle, DropdownMenu,Table } from 'reactstrap';
 import 'react-confirm-alert/src/react-confirm-alert.css'
-
+import '../index.css'
 import { confirmAlert } from 'react-confirm-alert';
+import Modal from 'react-modal'
 import {BrowserRouter,Route,Switch,NavLink} from 'react-router-dom'
-
+import { Button, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 const axios =require('axios');
 var sid='',isMale=false;
 class List extends React.Component{
@@ -16,7 +17,8 @@ class List extends React.Component{
             edtid:'',
             editData1:[],
             isEditing:false,
-            mycity:['Surat','Baroda','Mumbai']
+            mycity:['Surat','Baroda','Mumbai'],
+            modal:false
 
         };
         axios.get('http://localhost:8081/student/list').then((success)=>{
@@ -40,20 +42,18 @@ class List extends React.Component{
 
 
     }
-    // componentDidUpdate(){
-    //     axios.get('http://localhost:8081/student/list').then((success)=>{
-    //         if(!success)
-    //         {
-    //             console.log(`Data Not found`);
-    //         }
-    //         this.setState({data1:success.data});
-    //         console.log(`Data : ${this.state.data1}`);
-    //     }).catch((e)=>{
-    //         console.log(`Error : ${e.messagee}`);
-    //     })
-    // }
+
+
+    toggle=() => {
+        alert();
+        this.setState({
+            modal: !this.state.modal
+        });
+    }
+
+
     deleteData=(sid)=>{
-        alert('asas');
+       // alert('Delete');
         console.log("Student data",sid);
         axios.post(
             'http://localhost:8081/student/delete',
@@ -168,7 +168,7 @@ class List extends React.Component{
         });
     }
 
-    submit = () => {
+    submit = (sid) => {
         confirmAlert({
             title: 'Confirm to submit',                        // Title dialog
             message: 'Are you sure to do this.',               // Message dialog
@@ -176,10 +176,11 @@ class List extends React.Component{
             confirmLabel: 'Confirm',                           // Text button confirm
             cancelLabel: 'Cancel',                             // Text button cancel
             onConfirm: () => {
-                alert('a');
-              this.deleteData();
+              //  alert('a');
+              this.deleteData(sid);
             },
-            onCancel: () => {alert('b')}
+            onCancel: () => {//alert('b')
+                 }
         })
     };
 
@@ -190,62 +191,88 @@ class List extends React.Component{
         const editData1=this.state.editData1;
         return(
             <section>
+
                 {
+
                     isEditing?
+                        <Modal isOpen={this.state.modal} toggle={this.toggle} >
+                            <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
+                            <ModalBody>
+                                 <form>
+                                     <div className="form-group row">
+                                         <label for="inputPassword" className="col-sm-2 col-form-label">Full name</label>
+                                         <div className="col-sm-10">
+                                             <input type="text" id="fullname" name="fullname" defaultValue={this.state.editData1.fullname} onChange={this.handleFullname} />
+                                         </div>
+                                     </div>
+                                     <div className="form-group row">
+                                         <label for="inputPassword" className="col-sm-2 col-form-label">Email</label>
+                                         <div className="col-sm-10">
+                                             <input type="text" id="email" name="email" defaultValue={this.state.editData1.email} onChange={this.handleFullname}/>
 
-                    <form>
+                                         </div>
+                                     </div>
+                                     <div className="form-group row">
+                                         <label for="inputPassword" className="col-sm-2 col-form-label">Contact</label>
+                                         <div className="col-sm-10">
+                                             <input type="text" id="contact" name="contact"  defaultValue={this.state.editData1.contact} onChange={this.handleFullname}/>
 
-                        <input type="text" id="fullname" name="fullname" defaultValue={this.state.editData1.fullname} onChange={this.handleFullname} />
-                        <input type="text" id="email" name="email" defaultValue={this.state.editData1.email} onChange={this.handleEmail}/>
-                        <input type="text" id="contact" name="contact"  defaultValue={this.state.editData1.contact} onChange={this.handleContact}/>
-                        <section>
-                            {  isMale ?
-                            <div>
-                            <input type="radio" onChange={this.handleGender} checked={true} ref="radioM" name="gender" defaultValue="M" id="txtradioM"/>Male
+                                         </div>
+                                     </div>
 
-                            < input  type="radio" onChange={this.handleGender}  ref="radioF" name="gender" defaultValue="F" id="txtradioF"/>Female
-                            </div>
-                            :
-                            <div>
-                            <input type="radio" onChange={this.handleGender}  ref="radioM" name="gender" defaultValue="M"
-                            id="txtradioM"/>Male
-                            <input  type="radio" onChange={this.handleGender} checked={true} ref="radioF" name="gender" value="F" id="txtradioF"/>Female
-                            </div>
-                            }
-                        </section>
-                        <section>
+                                     <div className="form-group row">
+                                         <label for="inputPassword" className="col-sm-2 col-form-label">Gender</label>
 
-                            <label>City</label>
-                            <select  ref="selectcity" id="selectcity" name="city" onChange={this.handleCity}>
-                                <option defaultValue={this.state.editData1.city}>{this.state.editData1.city}</option>
-                                {
-                                        this.state.mycity.map((s,i)=>{
-                                            return s===this.state.editData1.city?``:<option defaultValue={s}>{s}</option>
+                                        <div className="col-sm-10">
+                                        <input type="radio" onChange={this.handleFullname} checked={this.state.editData1.gender==='M'?true:false} ref="radioM" name="gender" defaultValue="M" id="txtradioM"/>Male
+                                        < input  type="radio" onChange={this.handleFullname}  checked={this.state.editData1.gender==='M'?false:true}ref="radioF" name="gender" defaultValue="F" id="txtradioF"/>Female
+                                        </div>
 
-                                        })
+                                     </div>
+                                    <section>
+                                        <div className="form-group row">
+                                            <label for="inputPassword" className="col-sm-2 col-form-label">City</label>
+                                            <div className="col-sm-10">
+                                                <select  ref="selectcity" id="selectcity" name="city" onChange={this.handleFullname}>
+                                                    <option defaultValue={this.state.editData1.city}>{this.state.editData1.city}</option>
+                                                    {
+                                                        this.state.mycity.map((s,i)=>{
+                                                            return s===this.state.editData1.city?``:<option defaultValue={s}>{s}</option>
+
+                                                        })
+
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </section>
+
+                                     <div className="form-group row">
+                                         <label for="inputPassword" className="col-sm-2 col-form-label"></label>
+                                         <div className="col-sm-10">
+                                             <input className="btn btn-primary" type="submit" value="Update" onClick={()=>{
+                                                 this.state.edtid=this.state.editData1._id;
+                                                 console.log(this.state.edtid);
+                                                 this.updateData(this.state.edtid);
+                                             }
+                                             }/>
+                                         </div>
+                                     </div>
 
 
-                                }
-                            </select>
 
-
-                        </section>
-
-
-
-
-                        <input type="submit" value="Update" onClick={()=>{
-                                this.state.edtid=this.state.editData1._id;
-                                console.log(this.state.edtid);
-                                this.updateData(this.state.edtid);
-                        }
-                        }/>
                     </form>
+                            </ModalBody>
+                            {/*<ModalFooter>*/}
+                                {/*<Button color="primary" onClick={this.toggle}>Do Something</Button>{' '}*/}
+                                {/*<Button color="secondary" onClick={this.toggle}>Cancel</Button>*/}
+                            {/*</ModalFooter>*/}
+                        </Modal>
 
                     :
-                        <div>
-                    <table border="1">
-                    <tr>
+                        <div className="mytable">
+                    <Table hover border="1">
+                    <tr className="tableheading">
                     <td>Fullname</td>
                     <td>Email</td>
                     <td>Contact</td>
@@ -264,16 +291,16 @@ class List extends React.Component{
                                 <td>{s.city}</td>
                                 <td>{s.iagree}</td>
                                 <td>
-                                    <a href="#" className="fa fa-trash"  data-confirm="Are you sure to delete this item?" onClick={()=>{
+                                    <a href="#" data-toggle="tooltip" title="Delete" className="fa fa-trash"  data-confirm="Are you sure to delete this item?" onClick={()=>{
                                         sid=s._id;
-                                        this.submit();
+                                        this.submit(sid);
                                         //this.deleteData(sid);
-
+                                        this.props.history.push('/list');
 
                                     }
                                     }>
-                                    </a> ||
-                                    <a href="#" className="fa fa-pencil" onClick={()=>{
+                                    </a> ||{     }
+                                    <a href="#" data-toggle="tooltip" title="Edit" className="fa fa-pencil" onClick={()=>{
                                         sid=s._id;
                                         if(s.gender=='M')
                                         {
@@ -286,7 +313,7 @@ class List extends React.Component{
                                             isEditing:true,
                                             editData1:s
                                         })
-
+                                        this.toggle();
                                     }
                                     }>
                                     </a>
@@ -294,7 +321,7 @@ class List extends React.Component{
                             </tr>
                         })
                     }
-                    </table>
+                    </Table>
                     </div>
                 }
 

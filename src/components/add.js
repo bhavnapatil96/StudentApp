@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import {BrowserRouter,Route,Switch,NavLink} from 'react-router-dom'
-
+import '../index.css'
 const axios =require('axios');
 
 class Add extends React.Component{
@@ -37,6 +37,7 @@ class Add extends React.Component{
 
             }).then((res)=>{
             console.log(`Response ${res.data}`);
+            this.props.history.push('/list');
         }).catch((e)=>{
             console.log(`Error : ${e.message}`);
         });
@@ -46,43 +47,84 @@ class Add extends React.Component{
             <section>
 
                 <fieldset>
-                    <h1>Student App In React</h1>
-                    <div className="col-lg-4">
-                        <form onSubmit={(e)=>{e.preventDefault();}} className="form-horizontal" action="" method="post" encType="multipart/form-data">
-                            <div className="form-group">
-                                <input className="form-control" type="text" placeholder="Fullname" ref="txtname" id="txtname"/>
-                            </div>
-                            <div className="form-group">
-                                <input className="form-control" type="file"  ref="file1" id="file1"/>
-                            </div>
-                            <div className="form-group">
-                                <input className="form-control" type="text" placeholder="Email" ref="txtemail" id="txtemail"/>
-                            </div>
-                            <div className="form-group">
-                                <input className="form-control" type="password" placeholder="Password" ref="txtpassword" id="txtpassword"/>
-                            </div>
-                            <div className="form-group">
-                                <input className="form-control" type="text" placeholder="Conact" ref="txtcontact" id="txtcontact"/>
-                            </div>
-                            <div className="form-group">
-                                <input  type="radio" ref="radioF" name="radioG" value="F" id="txtradioF"/>Female
-                                <input  type="radio" ref="radioM" name="radioG" value="M" id="txtradioM"/>Male
-                            </div>
-                            <div className="form-group">
-                                <label>City</label>
-                                <select className="form-control" ref="selectcity" id="selectcity">
-                                    {
-                                        this.state.mycity.map((c,i)=>{
-                                            return   <option value={c}>{c}</option>
-                                        })
-                                    }
 
-                                </select>
+                    <div id="myform" className="col-lg-6">
+                        <h3>Student App In React</h3>
+                        <form onSubmit={(e)=>{e.preventDefault();}} action="" method="post" encType="multipart/form-data">
+
+                            <div className="form-group row">
+                                <label for="inputPassword" className="col-sm-2 col-form-label">Password</label>
+                                <div className="col-sm-10">
+                                    <input type="password" className="form-control" id="inputPassword" placeholder="Password"/>
+                                </div>
                             </div>
-                            <div className=" form-group checkbox">
-                                <label><input className="form-control" type="checkbox" ref="chkiagree" id="chk1"/>I Agree</label>
+                            <div className="form-group row" >
+                                <label className="col-sm-2 col-form-label" for="txtname">Full Name</label>
+                                <div className="col-sm-10">
+                                    <input className="form-control" type="text" placeholder="Fullname" ref="txtname" id="txtname"/>
+                                </div>
                             </div>
-                            <div>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label" for="file1">Photo</label>
+                                <div className="col-sm-10">
+                                     <input className="form-control" type="file"  ref="file1" id="file1"/>
+                                </div>
+                            </div>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label" for="txtemail">Email</label>
+                                <div className="col-sm-10">
+                                    <input className="form-control" type="text" placeholder="Email" ref="txtemail" id="txtemail"/>
+                                </div>
+                            </div>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label" for="txtemail">Password</label>
+                                <div className="col-sm-10">
+                                     <input className="form-control" type="password" placeholder="Password" ref="txtpassword" id="txtpassword"/>
+                                </div>
+                            </div>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label" for="txtcontact">Contact</label>
+                                <div className="col-sm-10">
+                                     <input className="form-control" type="text" placeholder="Conact" ref="txtcontact" id="txtcontact"/>
+                                </div>
+                            </div>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label" for="txtcontact">Gender</label>
+                                <div className="col-sm-10">
+                                    <input  className="" type="radio" ref="radioF" name="radioG" value="F" id="txtradioF"/>
+                                    <label className="form-check-label" for="txtradioF">Female</label>
+                                    <input  className="" type="radio" ref="radioM" name="radioG" value="M" id="txtradioM"/>
+                                    <label className="form-check-label" for="txtradioM">Male</label>
+
+                                </div>
+
+                            </div>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label" for="txtcontact">City</label>
+                                <div className="col-sm-10">
+                                    <select className="form-control" ref="selectcity" id="selectcity">
+                                        {
+                                            this.state.mycity.map((c,i)=>{
+                                                return   <option value={c}>{c}</option>
+                                            })
+                                        }
+
+                                    </select>
+                                </div>
+
+
+                            </div>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label" for="txtcontact">Terms & Conditions</label>
+                                <div className="col-sm-10">
+                                    <input className="form-check-input" type="checkbox" ref="chkiagree" id="chk1"/>
+                                    <label className="form-check-label" for="chk1">I Agree</label>
+                                </div>
+                            </div>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label" for="txtcontact"></label>
+
+                                <div className="col-sm-10">
                                 <input className="btn btn-success" type="submit" value="Save"
                                        onClick={()=>{
                                            let r='';
@@ -118,7 +160,9 @@ class Add extends React.Component{
                                                    this.sendData();
                                                });
                                        }}/>
+                                </div>
                             </div>
+
                         </form>
                     </div>
                 </fieldset>
