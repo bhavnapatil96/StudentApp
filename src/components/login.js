@@ -11,16 +11,17 @@ class Login extends React.Component {
             password: ''
         }
         this.sendData = this.sendData.bind(this);
+        if(localStorage.getItem('Token')===''){
+            this.props.history.push('/login');
+        }
     }
     gmaillogin=()=>{
-        axios.post(
-            'http://localhost:8081/auth/google',
-            {
-                email: this.state.email,
-                password: this.state.password
-            }).then((res) => {
-            console.log(`Response ${res.data}`);
-            this.props.history.push('/list');
+        alert('gmail login');
+        debugger;
+        axios.get('/auth/google').then((res,req) => {
+            // console.log(`Response ${res.data}`);
+            console.log('DEMO..');
+            //this.props.history.push('/list');
         }).catch((e) => {
             console.log(`Error : ${e.message}`);
         });
@@ -28,13 +29,16 @@ class Login extends React.Component {
     sendData() {
         console.log("Student data", this.state);
         axios.post(
-            'http://localhost:8081/student/login',
+            'http://localhost:8081/student/loginp',
             {
-                email: this.state.email,
+                username: this.state.email,
                 password: this.state.password
             }).then((res) => {
-            console.log(`Response ${res.data}`);
-            localStorage.setItem('student',JSON.stringify(res.data));
+            //console.log('header is ',res.headers["x-auth"]);
+            //console.log('Data : ',res.data);
+            localStorage.setItem('Token',res.headers["x-auth"]);
+            console.log("after setItem")
+            if(localStorage.getItem('Token'));
             this.props.history.push('/list');
         }).catch((e) => {
             console.log(`Error : ${e.message}`);
@@ -68,7 +72,10 @@ class Login extends React.Component {
                                                 this.sendData();
                                             });
                                     }}>Sign in</button>
-                            <button className="btn btn-lg btn-primary btn-block btn-signin" type="submit" onClick={()=>{this.gmaillogin()}}>Sign in with Google</button>
+
+                            <a href="http://localhost:8081/auth/google" className="btn btn-block btn-social btn-google">
+                                <span class="fa fa-google"></span> Sign in with Google
+                            </a>
                         </form>
                         <a href="#" className="forgot-password">
                             Forgot the password?

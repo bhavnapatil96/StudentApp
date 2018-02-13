@@ -19,9 +19,16 @@ class List extends React.Component{
             isEditing:false,
             mycity:['Surat','Baroda','Mumbai'],
             modal:false
-
         };
+        // var dt=localStorage.getItem("Token");
+        // console.log('dt : ',dt)
+        // if(!dt){
+        //     alert()
+        //     console.log('in tyoken')
+        //     this.props.history.push('/login');
+        // }
         axios.get('http://localhost:8081/student/list').then((success)=>{
+           // console.log('header is ',success.headers["x-auth"]);
             if(!success)
             {
                 console.log(`Data Not found`);
@@ -43,6 +50,15 @@ class List extends React.Component{
 
     }
 
+    componentWillMount(){
+        var dt=localStorage.getItem("Token");
+        console.log('dt : ',dt)
+        if(!dt){
+
+            console.log('in tyoken')
+            this.props.history.push('/login');
+        }
+    }
 
     toggle=() => {
         alert();
@@ -112,10 +128,10 @@ class List extends React.Component{
 
         console.log('fullname : ',event.target.value);
         const {value, name} = event.target;
-        const editData1 = this.state.editData1;
-        editData1[name] = value;
-        this.setState({editData1}, () => {
-            console.log(this.state.editData1.fullname);
+        const editData = this.state.editData;
+        editData[name] = value;
+        this.setState({editData}, () => {
+            console.log(this.state.editData.fullname);
         });
     }
     handleEmail(event){
@@ -188,7 +204,7 @@ class List extends React.Component{
 
 
         const isEditing =this.state.isEditing;
-        const editData1=this.state.editData1;
+       // const editData1=this.state.editData1;
         return(
             <section>
 
@@ -269,9 +285,12 @@ class List extends React.Component{
                             {/*</ModalFooter>*/}
                         </Modal>
 
-                    :
-                        <div className="mytable">
-                    <Table hover border="1">
+                    :<div>
+                            {/*<p>Local Storage {*/}
+                                {/*localStorage.getItem('student')*/}
+                            {/*}</p>*/}
+                    <Table hover  className="mytable" id="listtable" hover border="1">
+                        <thead>
                     <tr className="tableheading">
                     <td>Fullname</td>
                     <td>Email</td>
@@ -281,46 +300,50 @@ class List extends React.Component{
                     <td>Agree</td>
                     <td>Action</td>
                     </tr>
-                    {
-                        this.state.data1.map((s,index)=>{
-                            return <tr>
-                                <td>{s.fullname}</td>
-                                <td>{s.email}</td>
-                                <td>{s.contact}</td>
-                                <td>{s.gender}</td>
-                                <td>{s.city}</td>
-                                <td>{s.iagree}</td>
-                                <td>
-                                    <a href="#" data-toggle="tooltip" title="Delete" className="fa fa-trash"  data-confirm="Are you sure to delete this item?" onClick={()=>{
-                                        sid=s._id;
-                                        this.submit(sid);
-                                        //this.deleteData(sid);
-                                        this.props.history.push('/list');
+                        </thead>
+                        <tbody>
+                        {
+                            this.state.data1.map((s, index) => {
+                                return <tr>
+                                    <td>{s.fullname}</td>
+                                    <td>{s.email}</td>
+                                    <td>{s.contact}</td>
+                                    <td>{s.gender}</td>
+                                    <td>{s.city}</td>
+                                    <td>{s.iagree}</td>
+                                    <td>
+                                        <a href="#" data-toggle="tooltip" title="Delete" className="fa fa-trash"
+                                           data-confirm="Are you sure to delete this item?" onClick={() => {
+                                            sid = s._id;
+                                            this.submit(sid);
+                                            //this.deleteData(sid);
+                                            this.props.history.push('/list');
 
-                                    }
-                                    }>
-                                    </a> ||{     }
-                                    <a href="#" data-toggle="tooltip" title="Edit" className="fa fa-pencil" onClick={()=>{
-                                        sid=s._id;
-                                        if(s.gender=='M')
-                                        {
-                                            isMale=true
                                         }
-                                        else{
-                                            isMale=false
-                                        }
-                                        this.setState({
-                                            isEditing:true,
-                                            editData1:s
-                                        })
-                                        this.toggle();
-                                    }
-                                    }>
-                                    </a>
-                                </td>
-                            </tr>
-                        })
-                    }
+                                        }>
+                                        </a> ||{}
+                                        <a href="#" data-toggle="tooltip" title="Edit" className="fa fa-pencil"
+                                           onClick={() => {
+                                               sid = s._id;
+                                               if (s.gender == 'M') {
+                                                   isMale = true
+                                               }
+                                               else {
+                                                   isMale = false
+                                               }
+                                               this.setState({
+                                                   isEditing: true,
+                                                   editData1: s
+                                               })
+                                               this.toggle();
+                                           }
+                                           }>
+                                        </a>
+                                    </td>
+                                </tr>
+                            })
+                        }
+                        </tbody>
                     </Table>
                     </div>
                 }

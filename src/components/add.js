@@ -3,8 +3,10 @@ import ReactDOM from 'react-dom';
 
 import {BrowserRouter,Route,Switch,NavLink} from 'react-router-dom'
 import '../index.css'
-const axios =require('axios');
+import multer from 'multer';
 
+const axios =require('axios');
+const data = new FormData();
 class Add extends React.Component{
     constructor(){
         super();
@@ -20,6 +22,19 @@ class Add extends React.Component{
             mycity:['Surat','Baroda','Mumbai']
         }
     }
+    handleUploadFile = (event) => {
+        this.setState({photo:event.target.files[0].name});
+        //console.log('File ',event.target.files[0].name);
+    }
+    componentWillMount(){
+        var dt=localStorage.getItem("Token");
+        console.log('dt : ',dt)
+        if(!dt){
+
+            console.log('in tyoken')
+            this.props.history.push('/login');
+        }
+    }
     sendData=()=>{
         console.log("Student data",this.state);
         axios.post(
@@ -33,10 +48,8 @@ class Add extends React.Component{
                 city:this.state.city,
                 iagree:this.state.iagree,
                 photo:this.state.photo
-
-
             }).then((res)=>{
-            console.log(`Response ${res.data}`);
+            console.log(`Response`,res.data.photo);
             this.props.history.push('/list');
         }).catch((e)=>{
             console.log(`Error : ${e.message}`);
@@ -52,12 +65,7 @@ class Add extends React.Component{
                         <h3>Student App In React</h3>
                         <form onSubmit={(e)=>{e.preventDefault();}} action="" method="post" encType="multipart/form-data">
 
-                            <div className="form-group row">
-                                <label for="inputPassword" className="col-sm-2 col-form-label">Password</label>
-                                <div className="col-sm-10">
-                                    <input type="password" className="form-control" id="inputPassword" placeholder="Password"/>
-                                </div>
-                            </div>
+
                             <div className="form-group row" >
                                 <label className="col-sm-2 col-form-label" for="txtname">Full Name</label>
                                 <div className="col-sm-10">
@@ -67,7 +75,7 @@ class Add extends React.Component{
                             <div className="form-group row">
                                 <label className="col-sm-2 col-form-label" for="file1">Photo</label>
                                 <div className="col-sm-10">
-                                     <input className="form-control" type="file"  ref="file1" id="file1"/>
+                                     <input onChange={this.handleUploadFile} className="form-control" type="file"  name="file1" ref="file1" id="file1"/>
                                 </div>
                             </div>
                             <div className="form-group row">
