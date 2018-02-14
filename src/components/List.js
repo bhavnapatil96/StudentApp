@@ -292,6 +292,7 @@ class List extends React.Component{
                     <Table hover  className="mytable" id="listtable" hover border="1">
                         <thead>
                     <tr className="tableheading">
+                        <td>Photo</td>
                     <td>Fullname</td>
                     <td>Email</td>
                     <td>Contact</td>
@@ -305,6 +306,7 @@ class List extends React.Component{
                         {
                             this.state.data1.map((s, index) => {
                                 return <tr>
+                                    <td><img src={s.photo} height="50px" width="50px"/></td>
                                     <td>{s.fullname}</td>
                                     <td>{s.email}</td>
                                     <td>{s.contact}</td>

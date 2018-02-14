@@ -19,24 +19,40 @@ class Add extends React.Component{
             city:'',
             iagree:'',
             photo:'',
+            previewFile:'',
             mycity:['Surat','Baroda','Mumbai']
         }
     }
-    handleUploadFile = (event) => {
-        this.setState({photo:event.target.files[0].name});
-        //console.log('File ',event.target.files[0].name);
-    }
-    componentWillMount(){
-        var dt=localStorage.getItem("Token");
-        console.log('dt : ',dt)
-        if(!dt){
+    handleUploadFile = (e) => {
+        e.preventDefault();
 
-            console.log('in tyoken')
-            this.props.history.push('/login');
+        let reader = new FileReader();
+        let file = e.target.files[0];
+        //console.log('file',file);
+
+        reader.onloadend = () => {
+            this.setState({
+                photo:file,
+                previewFile: reader.result
+            });
+        };
+        reader.readAsDataURL(file);
+        console.log(`File Upload : ${this.state.previewFile}`);
         }
+
+
+    componentWillMount()
+{
+    var dt = localStorage.getItem("Token");
+    console.log('dt : ', dt)
+    if (!dt) {
+
+        console.log('in tyoken')
+        this.props.history.push('/login');
     }
+}
     sendData=()=>{
-        console.log("Student data",this.state);
+        console.log("Student data",this.state.photo);
         axios.post(
             'http://localhost:8081/student/add',
             {
@@ -47,14 +63,16 @@ class Add extends React.Component{
                 gender:this.state.gender,
                 city:this.state.city,
                 iagree:this.state.iagree,
-                photo:this.state.photo
+                photo:this.state.previewFile
             }).then((res)=>{
-            console.log(`Response`,res.data.photo);
+            console.log(`Response`,this.state.photo);
             this.props.history.push('/list');
         }).catch((e)=>{
             console.log(`Error : ${e.message}`);
         });
     }
+
+
     render(){
         return(
             <section>
@@ -75,7 +93,7 @@ class Add extends React.Component{
                             <div className="form-group row">
                                 <label className="col-sm-2 col-form-label" for="file1">Photo</label>
                                 <div className="col-sm-10">
-                                     <input onChange={this.handleUploadFile} className="form-control" type="file"  name="file1" ref="file1" id="file1"/>
+                                     <input  className="form-control" type="file"  name="file1" ref="file1" onChange={this.handleUploadFile} id="file1"/>
                                 </div>
                             </div>
                             <div className="form-group row">

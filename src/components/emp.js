@@ -21,6 +21,8 @@ class Emp extends React.Component{
             email:'',
             state:'',
             city:'',
+            previewFile:'',
+            photo:'',
             isEditing:false,
             state1:[],
             city1:[],
@@ -41,7 +43,7 @@ class Emp extends React.Component{
                 console.log(`Data Not found`);
             }
             this.setState({state1:success.data});
-            console.log(`Data :`, this.state.data1);
+            console.log(`States  :`, this.state.data1);
         }).catch((e)=>{
             console.log(`Error : `,e.message);
         });
@@ -101,14 +103,35 @@ class Emp extends React.Component{
             }
         })
     };
+    handleUploadFile = (e) => {
+        e.preventDefault();
+
+        let reader = new FileReader();
+        let file = e.target.files[0];
+        //console.log('file',file);
+
+        reader.onloadend = () => {
+            this.setState({
+                photo:file,
+                previewFile: reader.result
+            });
+        };
+        reader.readAsDataURL(file);
+        console.log(`File Upload : ${this.state.previewFile}`);
+
+
+
+    }
+
     sendData=(e)=>{
         console.log(this.state.isActive);
         e.preventDefault();
-        console.log("Employee data",this.state.currentData);
+        console.log("Employee data",this.state.editData);
         axios.post(
             'http://localhost:8282/add',
             {
-                ...this.state.editData
+                photo:this.state.previewFile,
+                 ...this.state.editData
 
             }).then((res)=>{
 
@@ -237,6 +260,16 @@ class Emp extends React.Component{
         // });
         this.setState({
             curr:no
+        })
+    }
+    mypage1=()=>{
+        this.setState({
+            curr:this.state.curr-1
+        })
+    }
+    mypage2=()=>{
+        this.setState({
+            curr:this.state.curr+1
         })
     }
     handleChange=(event)=>{
@@ -403,6 +436,12 @@ class Emp extends React.Component{
                                     </div>
                                 </div>
                                 <div className="form-group row" >
+                                    <label className="col-sm-2 col-form-label" for="txtname">Photo<span>*</span></label>
+                                    <div className="col-sm-10">
+                                        <input className="form-control" type="file" value={editData1.previewFile} onChange={this.handleUploadFile} name="photo" id="txtfname" required={true}/>
+                                    </div>
+                                </div>
+                                <div className="form-group row" >
                                     <label className="col-sm-2 col-form-label" for="txtname">Email<span>*</span></label>
                                     <div className="col-sm-10">
                                         <input className="form-control" type="email" value={editData1.email}  onChange={this.handleChange} name="email" id="txtemail" required={true}/>
@@ -491,6 +530,7 @@ class Emp extends React.Component{
                     <div className="col-lg-8 offset-2 table-responsive">
                         <table  className="table table-hover ">
                             <tr className="myrow">
+                                <td>Pic</td>
                                 <td>Firstname
                                     <a id="firstname" onClick={this.sort} className="fa fa-chevron-up"></a>
                                     <a id="firstname" onClick={this.dsort} className="fa fa-chevron-down"></a>
@@ -516,6 +556,7 @@ class Emp extends React.Component{
                                 (this.state.isSearch)?
                                     this.state.searchData.map((s,index)=>{
                                         return <tr>
+                                            <td><img src={s.photo} height="50px" width="50px"/></td>
                                             <td>{s.firstname}</td>
                                             <td>{s.lastname}</td>
                                             <td>{s.email}</td>
@@ -551,6 +592,7 @@ class Emp extends React.Component{
                                         if(index<this.state.totalRecords)
                                         {
                                             return <tr>
+                                                <td><img src={s.photo} height="50px" width="50px"/></td>
                                                 <td>{s.firstname}</td>
                                                 <td>{s.lastname}</td>
                                                 <td>{s.email}</td>
@@ -591,6 +633,13 @@ class Emp extends React.Component{
                         {
                             <div>
                                 <Pagination>
+                                    {
+                                        this.state.curr===1?``
+                                            :
+                                            <li onClick={this.mypage1}>
+                                            <PaginationItem><PaginationLink>Previous</PaginationLink></PaginationItem>
+                                        </li>
+                                    }
 
                                     {pages.map((p, i) => {
                                         return <li className="active" onClick={() => {
@@ -598,6 +647,14 @@ class Emp extends React.Component{
                                         }}><PaginationItem><PaginationLink href="#">{p}</PaginationLink></PaginationItem></li>
                                     })
                                     }
+                                    {
+                                        this.state.curr===totalPages?``
+                                            :
+                                            <li onClick={this.mypage2}>
+                                                <PaginationItem><PaginationLink>Next</PaginationLink></PaginationItem>
+                                            </li>
+                                    }
+
 
                                 </Pagination>
                                 <p>Shows {this.state.totalRecords} records from {len} Entries </p>
